@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: writer-config
+  labels:
+    app: writer
+data:
+  host: "10.97.35.41"
+  port: "5672"
+  username: guest
+  password: guest
+  postgreshost: "10.109.173.180"
+  postgresport: "5432"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: writer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: writer
+  template:
+    metadata:
+      labels:
+        app: writer
+    spec:
+      containers:
+        - name: writer
+          image: deadman445/writer:latest
+          imagePullPolicy: "Always"
+          envFrom:
+            - configMapRef:
+                name: writer-config
+
